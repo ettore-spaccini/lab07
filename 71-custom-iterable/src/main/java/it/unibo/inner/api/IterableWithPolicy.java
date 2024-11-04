@@ -9,5 +9,6 @@ public interface IterableWithPolicy<T> extends Iterable<T> {
      * Configures the policy used to filter out the elements to iterate.
      * @param filter the predicate used to filter out the elements in the collection during the iteration.
      */
-    void setIterationPolicy(Predicate<T> filter);
+    void setIterationPolicy(Predicate<T> filter); 
+
 }
