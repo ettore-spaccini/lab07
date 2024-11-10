@@ -1,17 +1,20 @@
 package it.unibo.inner.impl;
 
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.*;
 
 import it.unibo.inner.api.IterableWithPolicy;
 import it.unibo.inner.api.Predicate;
 
 public class IterableWithPolicyImpl<T> implements IterableWithPolicy<T>{
 
-    private final T[] elements; 
+    private final List<T> elements; 
     private Predicate<T> filter; 
 
-    public IterableWithPolicyImpl (T[] elements) {
+    /**
+     * The default policy is to iterate through all elements
+     * @param elements the elements to iterate
+     */
+    public IterableWithPolicyImpl (final T[] elements) {
         this(
             elements,
             new Predicate<T>() {
@@ -22,8 +25,13 @@ public class IterableWithPolicyImpl<T> implements IterableWithPolicy<T>{
         ); 
     }
 
+    /**
+     * If an alement satisfies the policy then iterates it
+     * @param elements the elements to iterate 
+     * @param filter the filter to apply
+     */
     public IterableWithPolicyImpl (T[] elements, Predicate<T> filter) {
-        this.elements = Arrays.copyOf(elements, elements.length); 
+        this.elements = List.of(elements); 
         this.setIterationPolicy(filter);
     }
 
@@ -45,8 +53,8 @@ public class IterableWithPolicyImpl<T> implements IterableWithPolicy<T>{
         @Override
         public boolean hasNext() {
 
-            while (this.current < IterableWithPolicyImpl.this.elements.length) {
-                if(IterableWithPolicyImpl.this.filter.test(IterableWithPolicyImpl.this.elements[current])) {
+            while (this.current < IterableWithPolicyImpl.this.elements.size()) {
+                if(IterableWithPolicyImpl.this.filter.test(IterableWithPolicyImpl.this.elements.get(current))) {
                     return true; 
                 } else {
                     this.current++; 
@@ -61,7 +69,12 @@ public class IterableWithPolicyImpl<T> implements IterableWithPolicy<T>{
             if (!this.hasNext()) {
                 throw new java.util.NoSuchElementException(); 
             }
-            return IterableWithPolicyImpl.this.elements[current++]; 
+            return IterableWithPolicyImpl.this.elements.get(current); 
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
         }
         
     }
